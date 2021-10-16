@@ -62,7 +62,7 @@ const App = () => {
                 if (ethereum) {
                     const provider = new ethers.providers.Web3Provider(ethereum);
                     const signer = provider.getSigner();
-                    const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, makeAnAINFT.abi, signer);
+                    const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, AINFT.abi, signer);
 
                     console.log("pop wallet, pay gas");
                     let nftTransaction = await connectedContract.makeAnAINFT();
