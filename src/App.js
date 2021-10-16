@@ -1,6 +1,8 @@
 import './styles/App.css';
 import twitterLogo from './assets/twitter-logo.svg';
 import React, {useEffect, useState} from "react";
+import { ethers } from "ethers";
+import AINFT from './utils/AINFT.json';
 
 // Constants
 const TWITTER_HANDLE = '_buildspace';
@@ -52,6 +54,31 @@ const App = () => {
         }
     }
 
+    const askContractToMintNft = async () => {
+        const CONTRACT_ADDRESS = 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266;
+            try {
+                const { ethereum } = window;
+
+                if (ethereum) {
+                    const provider = new ethers.providers.Web3Provider(ethereum);
+                    const signer = provider.getSigner();
+                    const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, makeAnAINFT.abi, signer);
+
+                    console.log("pop wallet, pay gas");
+                    let nftTransaction = await connectedContract.makeAnAINFT();
+
+                    console.log("mining in progress... WAIT!");
+                    await nftTransaction.wait();
+
+                    console.log(`mined, see transaction: https://rinkeby.etherscan.io/tx/${nftTransaction.hash}`);
+                } else {
+                    console.log("No Etherum object.");
+                }
+            } catch (error) {
+                console.log(error);
+            }
+    }
+
     useEffect(() => {
         checkIfWalletIsConnected();
     }, []);
@@ -62,7 +89,7 @@ const App = () => {
     <button onClick={connectWallet} className="cta-button connect-wallet-button">
       Connect to Wallet
     </button> : 
-    <button onClick={null} className="cta-button connect-wallet-button">
+    <button onClick={askContractToMintNft} className="cta-button connect-wallet-button">
     Mint NFT
     </button>
   );
